@@ -15,6 +15,8 @@ android {
     namespace 'com.example.bitriseapp'
     compileSdk 33
 
+    testBuildType "staging"
+
     defaultConfig {
         applicationId "com.example.bitriseapp"
         minSdk 24
@@ -26,19 +28,23 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
-        releaseAndroidTest {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+
+        staging {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -59,8 +65,18 @@ android {
     }
 }
 
-dependencies {
+def obtainTestBuildType() {
+    def result = "debug";
 
+    if (project.hasProperty("testBuildType")) {
+        result = project.getProperties().get("testBuildType")
+    }
+
+    result
+}
+
+
+dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
@@ -76,4 +92,11 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    implementation 'androidx.media3:media3-exoplayer:1.0.1'
+    implementation "androidx.media3:media3-ui:1.0.1"
+    implementation "androidx.media3:media3-cast:1.0.1"
+    implementation "androidx.media3:media3-session:1.0.1"
+    implementation 'androidx.media3:media3-exoplayer-dash:1.0.1'
+
 }

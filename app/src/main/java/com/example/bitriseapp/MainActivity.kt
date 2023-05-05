@@ -16,12 +16,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.PlayerView
 import com.example.bitriseapp.ui.theme.BitriseAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,24 +51,33 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val trackSelector = DefaultTrackSelector(context).apply {
+        setParameters(buildUponParameters().setMaxVideoSizeSd())
+    }
+    val exoplyer = ExoPlayer.Builder(context)
+        .setTrackSelector(trackSelector)
+        .build().apply {
+            addMediaItem(MediaItem.fromUri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+            prepare()
+            play()
+        }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(5.dp))
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp) ,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = ""
-            )
 
-            Text(text = "Testing", modifier = Modifier.padding(start = 10.dp))
-        }
+        AndroidView(factory = {
+            PlayerView(context).apply {
+                useController = true
+                player = exoplyer
+                exoplyer.play()
+            }
+        })
+
+
     }
 }
 
