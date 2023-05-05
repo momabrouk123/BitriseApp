@@ -15,13 +15,13 @@ android {
     namespace 'com.example.bitriseapp'
     compileSdk 33
 
-    if (project.hasProperty('androidTestRelease')) {
-        testBuildType 'release'
-    } else if (project.hasProperty('androidTestStaging')) {
-        testBuildType 'staging'
-    } else {
-        testBuildType 'debug'
-    }
+//    if (project.hasProperty('androidTestRelease')) {
+//        testBuildType 'release'
+//    } else if (project.hasProperty('androidTestStaging')) {
+//        testBuildType 'staging'
+//    } else {
+//        testBuildType 'debug'
+//    }
 
 
     defaultConfig {
