@@ -15,7 +15,14 @@ android {
     namespace 'com.example.bitriseapp'
     compileSdk 33
 
-    testBuildType "staging"
+    if (project.hasProperty('androidTestRelease')) {
+        testBuildType 'release'
+    } else if (project.hasProperty('androidTestStaging')) {
+        testBuildType 'staging'
+    } else {
+        testBuildType 'debug'
+    }
+
 
     defaultConfig {
         applicationId "com.example.bitriseapp"
@@ -63,16 +70,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-}
-
-def obtainTestBuildType() {
-    def result = "debug";
-
-    if (project.hasProperty("testBuildType")) {
-        result = project.getProperties().get("testBuildType")
-    }
-
-    result
 }
 
 
