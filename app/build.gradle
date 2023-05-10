@@ -101,6 +101,6 @@ dependencies {
     implementation "androidx.media3:media3-session:1.0.1"
     implementation 'androidx.media3:media3-exoplayer-dash:1.0.1'
 
-    androidTestImplementation 'com.github.flank:flank:1.0.0'
+   // androidTestImplementation 'com.github.flank:flank:1.0.0'
 
 }
