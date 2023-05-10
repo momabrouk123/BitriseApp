@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bitrise-386312",
+  "private_key_id": "0641b3b341eb2c1141f09b458fdd1f5fff3bcade",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQDF7NvrRoOL181O\nP1K2O1PHRZzwMCxCoZmK8y55YabV6741O7WEh+n9WBDgTaLxSffMf+Sc39X6moJC\nmnJAXPJgM5Ge/T2h/Pktz0SrzLbJw6YjkLt8+o9hxb92NBFAdSbjocwKsZtu4huI\n4gHi3hIIyIknkMV3+2XRRwC4bTtt9lpYEUkg8FUXVHdmNaX2K4Sn43IxQilPaOQB\nPpHe3iv6EBNtj8VAg+dx+eTxR/294q03UsOZO6R0e4j/TCOlfjYMeNaUTfIkn4v7\n2X6Ifc7CxzlCQ8pk/MODa8Q8U4czxL5Re5RMdCFf4J8glI4PgEKeoCfV5Np7/EOX\nGHSRczxlAgMBAAECgf8gqjahXcHYEoWPpGPCL4hkGtkLyueDF6h/hiLlZXhjVcTO\nhEww0z2K0j32xtldeResaG8SdN6bvWRCGbtBZBWcSuZ9ls3VLirxpINw1xhTtDZ3\nKCvJNJD1Ue2HVJCEUtFYQBusqCM+6ZIhxSsKhhvz1yTLotj0NElZgJ5d0ak9PGCn\nPRSMGPLzTLBXtDfclTovKPu49BR/gJbvCnLRbpvgDnP9VqSNq+EWSDEeO8tMSzsd\nMNaXSfDSr5t1YWhVlgNWfP14Zh9APgkcvJZaCatwdefAjo5zLWyQ22qs5FN1Wt7N\ndFAEFyTqQalifFRgotRloeAnd9F2M+3jXibqp/ECgYEA8yjMuH2UN36zqFnw/NGo\n6lp4DnPJW7na+10BUhPg4Lv1ltfwDqSxz+DIxxGTw+8zwRx/eHNd7taCo0hDBS8C\n7BVkGL9JxOOFdL3u4nFKKwpcpRJ0G324Zkuhb7c92d/3b9iqrq/toyL9f1MxNcO9\nwhrM4gGDBoERS3bJ7nZjwXUCgYEA0GCNX/KRJ+jrtG9hEsfMSeogJlhdN+niNMTG\nS0BaI4LINp/5zHiXbFgq4eMvdLFedoJOR+0MedzTczrlk1CmoMUVyK/RoPw+OXLM\nnpWvuRD/+GOLKY+BuCVshMvsxPTJzMKWoyPuCxSW63Gbm8aqhl+zUz3Zqf3R4NpX\nXoM6wTECgYAf3g/+ec7L+xn2jVsM9zlJBXRIiJoyIEh3uveqVxqYuWl1THWUpbb8\nBHyrwjz4Z8gDngWCtrPv0kMqvRSzgDbE1ATbTW6QlDTwWNgO60QKIgCETcfTtoVN\nOso8hupfPIAEM4QjAsGFKNfKMQ/4+N9MqhCB6irO1ml612Wdj/yA5QKBgB8byv9f\n/zuuEkJFvoBHQ8BlK5eN6ZzHVfX6yn/Bg7N5etps16Ym+rQ6FWzTten98NRQb89d\nHFe1F/xD9rIfgEDQK4hidzFJdyCses/SGQHP/+bdNZFm0z7il2jb6OUehmIDSung\nG1GcKUvNEiYXaq3U67ipqy0tr3+aGSELBmKBAoGAHa+hKWOEJ3R6RWEDm0KqED0S\nGXiyJBYdPAATDcqgz61/H7nMeyeuZ5pyUZ1pX00ZB033p26jOH2BtdkXn3FqVZEd\n1nL6sTBW9QiBHdaHqzRw8CfdZbxpbV3fcl64a2f/cpbZldaL55T6tF6/sdISHzYC\nAyb0w08BtnN3KviWi1M=\n-----END PRIVATE KEY-----\n",
+  "client_email": "mohamedmabrouk@bitrise-386312.iam.gserviceaccount.com",
+  "client_id": "103558813249976572661",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mohamedmabrouk%40bitrise-386312.iam.gserviceaccount.com"
+}
