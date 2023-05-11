@@ -23,4 +23,4 @@ flank:
   max-test-shards: 3
   num-test-runs: 1
   shard-time: 30
-  smart-flank-gcs-path: "gs://ta-report/android_ta.xml"
+  smart-flank-gcs-path: "gs://ta-report1/android_ta.xml"
