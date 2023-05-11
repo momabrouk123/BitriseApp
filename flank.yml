@@ -1,5 +1,5 @@
 gcloud:
-  results-bucket: ta-report
+  results-bucket: ta-report1
   results-dir: $BITRISE_BUILD_NUMBER
   record-video: true
   timeout: 30m
