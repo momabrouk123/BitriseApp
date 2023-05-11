@@ -1,51 +1,41 @@
-# gcloud args match the official gcloud cli
-
-# See the docs for full gcloud details https://cloud.google.com/sdk/gcloud/reference/firebase/test/android/run
-
 gcloud:
-
-  # -- AndroidGcloudYml --
-
-  ## The path to the application binary file.
-
-  ## The path may be in the local filesystem or in Google Cloud Storage using gs:// notation.
-
-  ## Android App Bundles are specified as .aab, all other files are assumed to be APKs.
-
-  app: app/build/outputs/apk/debug/app-debug.apk
-
-  ## The path to the binary file containing instrumentation tests.
-
-  ## The given path may be in the local filesystem or in Google Cloud Storage using a URL beginning with gs://.
-
-  test: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-
-  ## A list of DIMENSION=VALUE pairs which specify a target device to test against.
-
-  ## This flag may be repeated to specify multiple devices.
-
-  ## The four device dimensions are: model, version, locale, and orientation.
+#  app: ./app/build/outputs/apk/flavour/debug/app-flavour-debug.apk
+#  test: ./app/build/outputs/apk/androidTest/flavour/debug/app-flavour-debug-androidTest.apk
+  use-orchestrator : true
+  results-bucket: tests
+  results-dir: physical-devices
+  record-video: true
+  environment-variables:
+    coverage: true
+    coverageFilePath: /sdcard/
+    # performance-metrics: true
+    # additionalEnvironmentVariable: true
+  directories-to-pull:
+    - /sdcard/
+  # timeout: 8m
+  # num-flaky-test-attempts: 2
 
   device:
-
-    - model: Nexus6P
-
+    - model: dreamqlteue
       version: 26
-
       locale: en
-
       orientation: portrait
+    - model: beyond1
+      version: 28
+      locale: en
+      orientation: portrait
+    - model: flame
+      version: 29
+      locale: en
+      orientation: portrait
+  test-targets:
+    - package com.yourapp.tests
 
 flank:
-
-  # -- FlankYml --
-
-  ## test shards - the amount of groups to split the test suite into
-
-  ## set to -1 to use one shard per test. default: 1
-
-  max-test-shards: 5
-
-  ## The project id
-
-  project: bitrise
+  project: project-name-on-google-cloud(can be left empty)
+  max-test-shards: 10
+  shard-time: 120
+  # num-test-runs: 10
+  smart-flank-gcs-path: gs://tests/physical-devices/JUnitReport.xml
+  files-to-download:
+    - .*/sdcard/[^/]+\.ec$
