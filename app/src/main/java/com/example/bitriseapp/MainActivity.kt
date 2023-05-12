@@ -62,52 +62,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@SuppressLint("UnsafeOptInUsageError")
 @Composable
 fun Greeting() {
-    val context = LocalContext.current
-    val trackSelector = DefaultTrackSelector(context).apply {
-        setParameters(buildUponParameters().setMaxVideoSizeSd())
-    }
-    val exoplyer = ExoPlayer.Builder(context)
-        .setTrackSelector(trackSelector)
-        .build().apply {
-            addMediaItem(MediaItem.fromUri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
-            prepare()
-            play()
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), horizontalArrangement = Arrangement.SpaceAround) {
+            Button(onClick = {}) {
+                Text(text = "1")
+            }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(5.dp))
-    ) {
+            Button(onClick = {}) {
+                Text(text = "2")
+            }
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AndroidView(factory = {
-                PlayerView(context).apply {
-                    useController = true
-                    player = exoplyer
-                    exoplyer.play()
-                }
-            })
-
-            Button(onClick = {
-                if (exoplyer.isPlaying) exoplyer.pause() else exoplyer.play()
-            }) {
-                Text(text = "Pause")
+            Button(onClick = {}) {
+                Text(text = "3")
             }
         }
-
 
     }
 }
 
 @Preview(showBackground = true)
-@Preview(device = Devices.TABLET)
 @Composable
 fun GreetingPreview() {
     BitriseAppTheme {

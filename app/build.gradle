@@ -15,16 +15,7 @@ android {
     namespace 'com.example.bitriseapp'
     compileSdk 33
 
-    testBuildType System.getenv("TEST_BUILD_TYPE")?:"release"
-
-
-//    if (project.hasProperty('androidTestRelease')) {
-//        testBuildType 'release'
-//    } else if (project.hasProperty('androidTestStaging')) {
-//        testBuildType 'staging'
-//    } else {
-//        testBuildType 'debug'
-//    }
+    testBuildType System.getenv("TEST_BUILD_TYPE")?:"debug"
 
 
     defaultConfig {
@@ -38,7 +29,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        signingConfig signingConfigs.debug
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -48,13 +39,13 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
 
         staging {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 
