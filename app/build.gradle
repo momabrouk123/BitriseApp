@@ -15,7 +15,7 @@ android {
     namespace 'com.example.bitriseapp'
     compileSdk 33
 
-    testBuildType System.getenv("TEST_BUILD_TYPE")?:"debug"
+    testBuildType System.getenv("TEST_BUILD_TYPE")?:"release"
 
 
 //    if (project.hasProperty('androidTestRelease')) {
