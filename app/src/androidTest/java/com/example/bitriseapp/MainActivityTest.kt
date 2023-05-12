@@ -1,5 +1,6 @@
 package com.example.bitriseapp
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -20,5 +21,6 @@ class MainActivityTest {
 
         rule.onNodeWithText("Pause").performClick()
 
+        rule.onNodeWithText("Pause").assertExists()
     }
 }
