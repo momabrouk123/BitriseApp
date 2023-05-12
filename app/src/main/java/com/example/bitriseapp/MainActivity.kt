@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val windowSizeClass =calculateWindowSizeClass(activity = this)
+                    val windowSizeClass = calculateWindowSizeClass(activity = this)
                     Greeting()
                 }
             }
@@ -81,15 +83,27 @@ fun Greeting() {
             .clip(RoundedCornerShape(5.dp))
     ) {
 
-        AndroidView(factory = {
-            PlayerView(context).apply {
-                useController = true
-                player = exoplyer
-                exoplyer.play()
-            }
-        })
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AndroidView(factory = {
+                PlayerView(context).apply {
+                    useController = true
+                    player = exoplyer
+                    exoplyer.play()
+                }
+            })
 
-   }
+            Button(onClick = {
+                if (exoplyer.isPlaying) exoplyer.pause() else exoplyer.play()
+            }) {
+                Text(text = "Pause")
+            }
+        }
+
+
+    }
 }
 
 @Preview(showBackground = true)
