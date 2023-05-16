@@ -1,5 +1,5 @@
 gcloud:
-  results-bucket: "$Flank_Results_Bucket"
+  results-bucket: "{$Flank_Results_Bucket}"
   results-dir: "{$BITRISE_BUILD_NUMBER}"
   record-video: true
   timeout: 30m
@@ -23,4 +23,4 @@ flank:
   max-test-shards: 3
   num-test-runs: 1
   shard-time: 30
-  smart-flank-gcs-path: $Smart_Flank_Gcs_Path
+  smart-flank-gcs-path: "{$Smart_Flank_Gcs_Path}"
