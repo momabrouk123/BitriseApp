@@ -1,6 +1,6 @@
 gcloud:
   results-bucket: ta-report3
-  results-dir: ${BITRISE_BUILD_NUMBER}
+  results-dir: $BITRISE_BUILD_NUMBER
   record-video: true
   timeout: 30m
   async: false
@@ -11,6 +11,7 @@ gcloud:
     coverage: true
     coverageFilePath: "/sdcard/"
     clearPackageData: true
+    BITRISE_BUILD_NUMBER: $BITRISE_BUILD_NUMBER
   directories-to-pull:
     - "/sdcard/"
   performance-metrics: false
