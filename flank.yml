@@ -1,6 +1,6 @@
 gcloud:
-  results-bucket: ta-report3
-  results-dir: $BITRISE_BUILD_NUMBER
+  results-bucket: $Flank_Results_Bucket
+  results-dir: "{$BITRISE_BUILD_NUMBER}"
   record-video: true
   timeout: 30m
   async: false
@@ -23,4 +23,4 @@ flank:
   max-test-shards: 3
   num-test-runs: 1
   shard-time: 30
-  smart-flank-gcs-path: "gs://ta-report3/android_ta.xml"
+  smart-flank-gcs-path: $Smart_Flank_Gcs_Path
