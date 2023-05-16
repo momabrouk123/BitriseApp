@@ -1,5 +1,5 @@
 gcloud:
-  results-bucket: $Flank_Results_Bucket
+  results-bucket: "$Flank_Results_Bucket"
   results-dir: "{$BITRISE_BUILD_NUMBER}"
   record-video: true
   timeout: 30m
