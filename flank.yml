@@ -15,7 +15,7 @@ gcloud:
     - "/sdcard/"
   performance-metrics: false
   test-targets:
-    - "annotation com.example.bitriseapp"
+    - "annotation com.example.bitriseapp.androidTest"
   device:
     - model: "Pixel3"
       version: "30"
