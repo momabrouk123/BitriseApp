@@ -15,7 +15,7 @@ gcloud:
     - "/sdcard/"
   performance-metrics: false
   test-targets:
-    - class com.example.bitriseapp.MainActivityTest#useAppContext
+    - package com.example.bitriseapp
   device:
     - model: "Pixel3"
       version: "30"
