@@ -1,0 +1,340 @@
+---
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: android
+meta:
+  bitrise.io:
+    stack: linux-docker-android-20.04
+    machine_type_id: standard
+app:
+  envs:
+    - opts:
+        is_expand: false
+      PROJECT_LOCATION: "."
+    - opts:
+        is_expand: false
+      MODULE: app
+    - opts:
+        is_expand: false
+      VARIANT: release
+    - opts:
+        is_expand: false
+      JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
+    - opts:
+        is_expand: false
+      APK_RUN_PATH: "${HOME}/debug/app_debug.apk"
+    - ANDROID_KEYSTORE_PATH: "${HOME}/keystores/bitrise.jks"
+    - GRADLEW_PATH: "./gradlew"
+    - opts:
+        is_expand: false
+      FIREBASE_INSTALL_PAGE_URL: https://console.firebase.google.com/u/0/project/placepicker-250513/appdistribution/app/android:com.example.bitriseapp/releases
+    - opts:
+        is_expand: false
+      FIREBASE_TESTING_GRPOUP: testers
+    - opts:
+        is_expand: false
+      TEST_BUILD_TYPE: release
+    - opts:
+        is_expand: false
+      SERVICE_ACCOUNT_PATH: "./service_account.json"
+    - opts:
+        is_expand: false
+      Flank_Results_Bucket: ta-report3
+    - opts:
+        is_expand: false
+      Smart_Flank_Gcs_Path: gs://ta-report3/android_ta.xml
+    - opts:
+        is_expand: false
+      GOOGLE_CLOUD_PROJECT_ID: bitrise-386312
+pipelines:
+  ui_test_on_multiple_devices:
+    stages:
+      - build_tests: {}
+      - run_rests: {}
+      - run_deploy: {}
+  run_ui_test_on_devices:
+    stages:
+      - build_tests: {}
+      - run_firebase_lab: {}
+stages:
+  build_tests:
+    workflows:
+      - build_for_ui_testing: {}
+  run_rests:
+    workflows:
+      - ui_test_on_phone_api_R_30: {}
+  run_deploy:
+    workflows:
+      - deploy: {}
+  run_firebase_lab:
+    workflows:
+      - firebase_test_lab: {}
+workflows:
+  _pull_apks:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: build_tests.build_for_ui_testing
+  _run_tests:
+    steps:
+      - avd-manager@1:
+          inputs:
+            - api_level: "$ANDROID_API"
+            - profile: "$EMULATOR_PROFILE"
+      - wait-for-android-emulator@1: {}
+      - android-instrumented-test@0: {}
+  build_for_ui_testing:
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@8: {}
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: "$PROJECT_LOCATION/gradlew"
+      - android-build-for-ui-testing@0:
+          inputs:
+            - module: app
+            - variant: "$VARIANT"
+            - arguments: ''
+      - android-unit-test@1:
+          inputs:
+            - variant: "$VARIANT"
+            - module: app
+      - deploy-to-bitrise-io@2:
+          inputs:
+            - pipeline_intermediate_files: |-
+                $BITRISE_APK_PATH:BITRISE_APK_PATH
+                $BITRISE_TEST_APK_PATH:BITRISE_TEST_APK_PATH
+  deploy:
+    steps:
+      - firebase-app-distribution@0:
+          inputs:
+            - app: "$TEMP_FIREBASE_APP_KEY"
+            - release_notes: "$FIREBASE_INSTALL_PAGE_URL"
+            - testers: ''
+            - groups: "$FIREBASE_TESTING_GRPOUP"
+            - firebase_token: "$FIREBASE_TOKEN"
+      - deploy-to-bitrise-io@2: {}
+      - cache-push@2: {}
+      - microsoft-teams-integration@2:
+          inputs:
+            - actions: "[\n  {\n    \"text\": \"Apk Build\", \n    \"targets\": [\n      {\n
+            \       \"uri\": \"https://console.firebase.google.com/u/0/project/placepicker-250513/appdistribution/app/android:com.example.bitriseapp/releases\",\n
+            \       \"os\": \"iOS\"\n      },\n      {\n        \"uri\": \"https://console.firebase.google.com/u/0/project/placepicker-250513/appdistribution/app/android:com.example.bitriseapp/releases\",\n
+            \       \"os\": \"android\"\n      },\n      {\n        \"uri\": \"https://console.firebase.google.com/u/0/project/placepicker-250513/appdistribution/app/android:com.example.bitriseapp/releases\",\n
+            \       \"os\": \"default\"\n      }\n    ]\n  }                  \n]"
+            - webhook_url: https://mbcsp.webhook.office.com/webhookb2/004e6583-0da4-47e6-ac0b-6fe306be34bf@a2b1d645-2205-433b-b4f4-98b6b3d66dcf/IncomingWebhook/0c072ec48ec142fc9a2e009484d20e38/25d9eb22-ebb9-4513-9093-efebbcb52f71
+    envs:
+      - opts:
+          is_expand: false
+        VARIANT: release
+      - FIREBASE_RELEASE_NOTES: ${BITRISE_BUILD_NUMBER} This version points to QA environment.
+          It covers all "Ready for QA" tickets with fix version ${BITRISE_GIT_TAG}.
+    before_run:
+      - _pull_apks
+  firebase_test_lab:
+    before_run:
+      - _pull_apks
+    steps:
+      - file-downloader@1:
+          inputs:
+            - destination: "./service_account.json"
+            - source: "$BITRISEIO_service_account_URL"
+      - script@1:
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # make pipelines' return status equal the last command to exit with a non-zero status, or zero if all commands exit successfully
+                set -o pipefail
+                # debug log
+                set -x
+                
+                # write your script here
+                #apt install wget
+                #wget --quiet https://github.com/TestArmada/flank/releases/download/v22.05.0/flank.jar -O /usr/local/bin/flank.jar
+                #java -jar /usr/local/bin/flank.jar firebase test android run
+                envman add --key SERVICE_ACCOUNT_JSON_CONTENT --valuefile ./service_account.json
+      - script@1:
+          inputs:
+            - content: "#!/usr/bin/env bash\nset -e\nset -o pipefail\nset -x\n\necho \"$SERVICE_ACCOUNT_PATH\"
+            > $HOME/.config/gcloud/service_account.json \n\ngcloud auth activate-service-account
+            --project=$GOOGLE_CLOUD_PROJECT_ID --key-file=$SERVICE_ACCOUNT_PATH"
+          title: Configure Google Service Account
+      - script@1:
+          inputs:
+            - content: "#!/usr/bin/env bash\n# fail if any commands fails\nset -e\n# make
+            pipelines' return status equal the last command to exit with a non-zero
+            status, or zero if all commands exit successfully\nset -o pipefail\n#
+            debug log\nset -x\n\ngcloud firebase test android run \\\n  --type instrumentation
+            \\\n  --app $BITRISE_APK_PATH \\\n  --test $BITRISE_TEST_APK_PATH \\\n
+            \ --device model=Pixel3,version=30,locale=en,orientation=portrait        "
+          title: Run Firebase Testes
+      - script@1:
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # debug log
+                set -x
+                cat << FLANKEOF > ./flank.yml
+                gcloud:
+                  results-bucket: $Flank_Results_Bucket
+                  results-dir: $BITRISE_BUILD_NUMBER
+                  record-video: true
+                  timeout: 30m
+                  async: false
+                  app: $BITRISE_APK_PATH
+                  test: $BITRISE_TEST_APK_PATH
+                  use-orchestrator: true
+                  environment-variables:
+                    coverage: true
+                    coverageFilePath: "/sdcard/"
+                    clearPackageData: true
+                  directories-to-pull:
+                  - "/sdcard/"
+                  performance-metrics: false
+                  test-targets:
+                    - package com.example.bitriseapp
+                  device:
+                  - model: "Pixel2"
+                    version: "30"
+                flank:
+                  max-test-shards: 3
+                  num-test-runs: 1
+                  shard-time: 30
+                  smart-flank-gcs-path: "gs://$Flank_Results_Bucket/android_ta.xml"
+                  test-targets-always-run:
+                  - package com.example.bitriseapp
+          title: Generate Flank config
+      - flank@0:
+          inputs:
+            - config_path: "./flank.yml"
+            - google_service_account_json: "$SERVICE_ACCOUNT_JSON_CONTENT"
+      - script@1:
+          inputs:
+            - content: |-
+                #!/bin/env bash
+                
+                gcloud auth activate-service-account --project=$GOOGLE_CLOUD_PROJECT_ID --key-file=$SERVICE_ACCOUNT_PATH
+                echo "$SERVICE_ACCOUNT_PATH" > $HOME/.config/gcloud/service_account.json
+                
+                mkdir firebase-test-results
+                
+                #gsutil cp "gs://uitests-reports/$BITRISE_BUILD_NUMBER/matrix_0/Pixel2-30-en-portrait/test_result_1.xml" "firebase-test-results/test_result.xml"
+                
+                gsutil cp "gs://uitests-reports/$BITRISE_BUILD_NUMBER/JUnitReport.xml" "firebase-test-results/test_result.xml"
+          title: Collect Tests Results
+  test:
+    steps:
+      - script@1:
+          inputs:
+            - content: |
+                #!/bin/bash
+                set -ex
+                
+                # Install Android 31 emulator image
+                echo y | sdkmanager --install "system-images;android-31;google_apis;x86_64"
+                echo no | avdmanager --verbose create avd --force --name "emulator-31" --abi "google_apis/x86_64" --package "system-images;android-31;google_apis;x86_64"
+  testing_deploy:
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@8: {}
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: "$PROJECT_LOCATION/gradlew"
+      - android-build-for-ui-testing@0:
+          inputs:
+            - variant: release
+            - module: app
+      - android-build@1:
+          inputs:
+            - variant: release
+            - module: app
+      - deploy-to-bitrise-io@2:
+          inputs:
+            - pipeline_intermediate_files: |-
+                $BITRISE_APK_PATH:BITRISE_APK_PATH
+                $BITRISE_TEST_APK_PATH:BITRISE_TEST_APK_PATH
+    after_run: []
+  ui_test_on_foldable:
+    envs:
+      - EMULATOR_PROFILE: 8in Foldable
+      - ANDROID_API: '26'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '28'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_27:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '27'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_P_28:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '28'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_Q_29:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '29'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_R_30:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '30'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_S_31:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '31'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_S_32:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '32'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_phone_api_T_33:
+    envs:
+      - EMULATOR_PROFILE: pixel_5
+      - ANDROID_API: '33'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
+  ui_test_on_tablet:
+    envs:
+      - EMULATOR_PROFILE: 10.1in WXGA (Tablet)
+      - ANDROID_API: '26'
+    before_run:
+      - _pull_apks
+    after_run:
+      - _run_tests
